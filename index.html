@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+    }
+
+    #main {
+        height: 100%;
+        width: 100%;
+        background-color: skyblue;
+    }
+</style>
+
+<body>
+    <button id="btn">返回上一级</button>
+    <div id="main">
+
+    </div>
+    <script src="./echarts.min.js"></script>
+    <script src="./map/china.js"></script>
+    <script class="add"></script>
+    <script>
+        // 动态创建的标签
+        let add = document.querySelector('.add')
+        function rnederNumber() {
+            return (Math.random() * 600 | 0)
+        }
+        var mydata = [
+            { name: '北京', seriesName: 'beijing', value: rnederNumber() }, { name: '天津', seriesName: 'tianjing', value: rnederNumber() },
+            { name: '上海', seriesName: 'shanghai', value: rnederNumber() }, { name: '重庆', seriesName: 'chongqing', value: rnederNumber() },
+            { name: '河北', seriesName: 'hebei', value: rnederNumber() }, { name: '河南', seriesName: 'henan', value: rnederNumber() },
+            { name: '云南', seriesName: 'yunnan', value: rnederNumber() }, { name: '辽宁', seriesName: 'liaoning', value: rnederNumber() },
+            { name: '黑龙江', seriesName: 'heilongjiang', value: rnederNumber() }, { name: '湖南', seriesName: 'hunan', value: rnederNumber() },
+            { name: '安徽', seriesName: 'anhui', value: rnederNumber() }, { name: '山东', seriesName: 'shandong', value: rnederNumber() },
+            { name: '新疆', seriesName: 'xinjiang', value: rnederNumber() }, { name: '江苏', seriesName: 'jiangsu', value: rnederNumber() },
+            { name: '浙江', seriesName: 'zhejiang', value: rnederNumber() }, { name: '江西', seriesName: 'jiangxi', value: rnederNumber() },
+            { name: '湖北', seriesName: 'hubei', value: rnederNumber() }, { name: '广西', seriesName: 'guangxi', value: rnederNumber() },
+            { name: '甘肃', seriesName: 'gansu', value: rnederNumber() }, { name: '山西', seriesName: 'shanxi', value: rnederNumber() },
+            { name: '内蒙古', seriesName: 'neimenggu', value: rnederNumber() }, { name: '陕西', seriesName: 'shanxi1', value: rnederNumber() },
+            { name: '吉林', seriesName: 'jilin', value: rnederNumber() }, { name: '福建', seriesName: 'gujian', value: rnederNumber() },
+            { name: '贵州', seriesName: 'guizhou', value: rnederNumber() }, { name: '广东', seriesName: 'guangdong', value: rnederNumber() },
+            { name: '青海', seriesName: 'qinghai', value: rnederNumber() }, { name: '西藏', seriesName: 'xizang', value: rnederNumber() },
+            { name: '四川', seriesName: 'sichuan', value: rnederNumber() }, { name: '宁夏', seriesName: 'ningxia', value: rnederNumber() },
+            { name: '海南', seriesName: 'hainan', value: rnederNumber() }, { name: '台湾', seriesName: 'taiwan', value: rnederNumber() },
+            { name: '香港', seriesName: 'xianggang', value: rnederNumber() }, { name: '澳门', seriesName: 'aomen', value: rnederNumber() }
+        ];
+        var optionMap = {
+            backgroundColor: '#FFFFFF',
+            title: {
+                text: '全国地图大数据',
+                subtext: '',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+
+            // 左侧小导航图标
+            visualMap: {
+                show: true,
+                x: 'left',
+                y: 'center',
+                splitList: [
+                    { start: 500, end: 600 }, { start: 400, end: 500 },
+                    { start: 300, end: 400 }, { start: 200, end: 300 },
+                    { start: 100, end: 200 }, { start: 0, end: 100 },
+                ],
+                color: ['skyblue', '#9feaa5', '#85daef', '#74e2ca', '#e6ac53', '#9fb5ea']
+            },
+
+            //配置属性
+            series: [{
+                name: '数据',
+                type: 'map',
+                mapType: 'china',
+                roam: true,
+                label: {
+                    normal: {
+                        show: true  //省份名称  
+                    },
+                    emphasis: {
+                        show: false
+                    }
+                },
+                data: mydata  //数据
+            }]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var btn = document.getElementById('btn')
+
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(optionMap);
+        // 鼠标移动事件
+        // myChart.on('mouseover', function (params) {
+        //     var dataIndex = params.dataIndex;
+        // });
+        // 下钻其实就是点击事件，切换脚本而已
+        myChart.on('click', function (chinaParam) {
+            console.log(chinaParam)
+            try {
+                let seriesName = chinaParam.data.seriesName
+                add.src = `./map/province/${seriesName}.js`
+            } catch {
+                alert('没有更多数据了')
+                return
+            }
+            setTimeout(function () {
+                if (chinaParam.seriesName == chinaParam.seriesName) {
+                    var option = myChart.getOption();
+                    option.series[0].map = chinaParam.name;
+                    myChart.setOption(option);
+                }
+            }, 200)
+        });
+        // 右击返回
+        btn.onclick = function () {
+            // console.log(history)
+            window.location.reload()
+        }
+    </script>
+</body>
+
+</html>
